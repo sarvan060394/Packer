@@ -16,3 +16,13 @@ Here is an example Packer configuration file for creating a virtual machine with
 
 This configuration file uses the Azure ARM builder to create a Windows Server 2019 virtual machine, and then uses the PowerShell provisioner to download and install SQL Server 2019 Developer Edition with default settings. Note that this is just an example, and your configuration file may differ depending on your specific requirements and environment.
 
+#Packer for creating Vsphere VM with Mysql installed:
+This configuration file does the following:
+
+Configures the vSphere-iso builder to create a new virtual machine in vSphere based on an Ubuntu Server 20.04 ISO image, with the specified name and settings.
+Uses the shell provisioner to install MySQL Server 8.0 and create a test database.
+Uses the vSphere-clone post-processor to publish the resulting virtual machine image to vSphere.
+To use this configuration file, save it as a JSON file (e.g. mysql-vm.json), and run the following command from the same directory as the file:
+
+packer build mysql-vm.json
+
