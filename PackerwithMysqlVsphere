@@ -1,0 +1,56 @@
+{
+  "variables": {
+    "vsphere_server": "vcenter.example.com",
+    "vsphere_username": "administrator@vsphere.local",
+    "vsphere_password": "mysecretpassword",
+    "vsphere_datacenter": "MyDatacenter",
+    "vsphere_cluster": "MyCluster",
+    "vsphere_datastore": "MyDatastore",
+    "vsphere_network": "MyNetwork",
+    "vm_name": "mysql-vm",
+    "guest_os_type": "ubuntu64Guest",
+    "iso_path": "[MyDatastore] iso/ubuntu-20.04.3-live-server-amd64.iso",
+    "mysql_version": "8.0"
+  },
+  "builders": [
+    {
+      "type": "vsphere-iso",
+      "vcenter_server": "{{user `vsphere_server`}}",
+      "username": "{{user `vsphere_username`}}",
+      "password": "{{user `vsphere_password`}}",
+      "datacenter": "{{user `vsphere_datacenter`}}",
+      "cluster": "{{user `vsphere_cluster`}}",
+      "datastore": "{{user `vsphere_datastore`}}",
+      "network": "{{user `vsphere_network`}}",
+      "vm_name": "{{user `vm_name`}}",
+      "iso_paths": ["{{user `iso_path`}}"],
+      "disk_size": 40000,
+      "guest_os_type": "{{user `guest_os_type`}}",
+      "ssh_username": "ubuntu",
+      "ssh_password": "password",
+      "ssh_wait_timeout": "20m",
+      "shutdown_command": "sudo poweroff"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get update",
+        "sudo apt-get install -y mysql-server-{{user `mysql_version`}}",
+        "sudo mysql -u root -e 'CREATE DATABASE testdb;'"
+      ]
+    },
+    {
+      "type": "vsphere-clone",
+      "remote_host": "{{user `vsphere_server`}}",
+      "username": "{{user `vsphere_username`}}",
+      "password": "{{user `vsphere_password`}}",
+      "datacenter": "{{user `vsphere_datacenter`}}",
+      "cluster": "{{user `vsphere_cluster`}}",
+      "datastore": "{{user `vsphere_datastore`}}",
+      "vm_name": "{{user `vm_name`}}",
+      "publish": true
+    }
+  ]
+}
