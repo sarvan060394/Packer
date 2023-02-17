@@ -1,0 +1,33 @@
+{
+  "builders": [{
+    "type": "vsphere-iso",
+    "vcenter_server": "vcenter.example.com",
+    "username": "administrator@vsphere.local",
+    "password": "mysecretpassword",
+    "insecure_connection": true,
+    "datacenter": "MyDatacenter",
+    "cluster": "MyCluster",
+    "network": "MyNetwork",
+    "datastore": "MyDatastore",
+    "iso_paths": [
+      "[MyDatastore] iso/SQLServer2019-x64-ENU-Dev.iso"
+    ],
+    "disk_controller_type": "pvscsi",
+    "guest_os_type": "windows9Server64Guest",
+    "boot_command": [
+      "<Tab><Tab><Enter>",
+      "netsh advfirewall set allprofiles state off",
+      "powershell -ExecutionPolicy ByPass -File .\\install_sql.ps1",
+      "<Enter>"
+    ],
+    "boot_wait": "2m",
+    "floppy_files": [
+      "./autounattend.xml",
+      "./install_sql.ps1"
+    ]
+  }],
+  "provisioners": [{
+    "type": "powershell",
+    "script": "./configure_sql.ps1"
+  }]
+}
