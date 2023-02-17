@@ -1,0 +1,48 @@
+provider "vsphere" {
+  user           = var.vsphere_user
+  password       = var.vsphere_password
+  vsphere_server = var.vsphere_server
+}
+
+data "vsphere_datacenter" "dc" {
+  name = var.datacenter_name
+}
+
+data "vsphere_datastore" "ds" {
+  name          = var.datastore_name
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+data "vsphere_network_interface" "network_interface" {
+  label          = var.network_interface_label
+  virtual_machine_id = var.existing_vm_id # or use a data block to retrieve an existing VM's id
+}
+
+data "vsphere_resource_pool" "resource_pool" {
+  name          = var.resource_pool_name
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+resource "vsphere_virtual_machine" "vm" {
+  name             = var.vm_name
+  num_cpus         = var.vm_cpu_count
+  memory           = var.vm_memory_mb
+  guest_id         = var.guest_os_type
+  datastore_id     = data.vsphere_datastore.ds.id
+  resource_pool_id = data.vsphere_resource_pool.resource_pool.id
+
+  network_interface {
+    network_id = data.vsphere_network_interface.network_interface.network_id
+  }
+
+  disk {
+    label            = "disk0"
+    size             = var.disk_size_gb
+    eagerly_scrub    = true
+    thin_provisioned = true
+  }
+
+  clone {
+    template_uuid = var.template_uuid
+  }
+}
