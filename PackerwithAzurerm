@@ -1,0 +1,28 @@
+{
+  "builders": [{
+    "type": "azure-arm",
+    "client_id": "{{env `ARM_CLIENT_ID`}}",
+    "client_secret": "{{env `ARM_CLIENT_SECRET`}}",
+    "tenant_id": "{{env `ARM_TENANT_ID`}}",
+    "subscription_id": "{{env `ARM_SUBSCRIPTION_ID`}}",
+    "managed_image_resource_group_name": "myResourceGroup",
+    "managed_image_name": "myImageName",
+    "os_type": "Windows",
+    "image_publisher": "MicrosoftWindowsServer",
+    "image_offer": "WindowsServer",
+    "image_sku": "2019-Datacenter",
+    "azure_tags": {
+      "dept": "Engineering",
+      "task": "Image deployment"
+    }
+  }],
+  "provisioners": [{
+    "type": "powershell",
+    "inline": [
+      "Invoke-WebRequest -Uri https://go.microsoft.com/fwlink/?linkid=866662 -OutFile C:\\SQLServer2019-x64-ENU-Dev.exe",
+      "C:\\SQLServer2019-x64-ENU-Dev.exe /QS /IACCEPTSQLSERVERLICENSETERMS /ROLE=AllFeatures_WithDefaults /INSTANCENAME=MSSQLSERVER /SECURITYMODE=SQL /SAPWD=MySAPassword /TCPENABLED=1 /SQLSVCACCOUNT='NT AUTHORITY\\NETWORK SERVICE' /AGTSVCACCOUNT='NT AUTHORITY\\NETWORK SERVICE' /ASSVCAccount='NT AUTHORITY\\NETWORK SERVICE' /ISSVCAccount='NT AUTHORITY\\NETWORK SERVICE' /RSSVCAccount='NT AUTHORITY\\NETWORK SERVICE' /ASCOLLATION=Latin1_General_CI_AS /AGTSVCSTARTUPTYPE=Automatic /ASSVCSTARTUPTYPE=Automatic /ISSVCSTARTUPTYPE=Automatic /RSSVCSTARTUPTYPE=Automatic",
+      "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine",
+      "New-NetFirewallRule -DisplayName 'SQL Server' -Direction Inbound -Protocol TCP -LocalPort 1433 -Action Allow"
+    ]
+  }]
+}
