@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Set the Terraform Enterprise API token and organization name
+TFE_TOKEN="YOUR_TFE_API_TOKEN"
+TFE_ORG="YOUR_TFE_ORGANIZATION_NAME"
+
+# Set the workspace name and variable names
+TFE_WORKSPACE="YOUR_TFE_WORKSPACE_NAME"
+TFE_VARIABLE_1="YOUR_TFE_VARIABLE_NAME_1"
+TFE_VARIABLE_2="YOUR_TFE_VARIABLE_NAME_2"
+
+# Get the variable values from the Terraform Enterprise API
+VARIABLE_VALUE_1=$(curl -s \
+  --header "Authorization: Bearer $TFE_TOKEN" \
+  --header "Content-Type: application/vnd.api+json" \
+  "https://app.terraform.io/api/v2/vars?filter%5Borganization%5D%5Bname%5D=$TFE_ORG&filter%5Bworkspace%5D%5Bname%5D=$TFE_WORKSPACE&filter%5Bname%5D=$TFE_VARIABLE_1" \
+  | jq -r '.data[].attributes.value')
+
+VARIABLE_VALUE_2=$(curl -s \
+  --header "Authorization: Bearer $TFE_TOKEN" \
+  --header "Content-Type: application/vnd.api+json" \
+  "https://app.terraform.io/api/v2/vars?filter%5Borganization%5D%5Bname%5D=$TFE_ORG&filter%5Bworkspace%5D%5Bname%5D=$TFE_WORKSPACE&filter%5Bname%5D=$TFE_VARIABLE_2" \
+  | jq -r '.data[].attributes.value')
+
+# Print the variable values
+echo "Variable 1: $VARIABLE_VALUE_1"
+echo "Variable 2: $VARIABLE_VALUE_2"
