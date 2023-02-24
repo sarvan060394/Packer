@@ -1,0 +1,54 @@
+provider "openshift" {
+  url = "https://api.example.com:6443"
+  token = "your_token"
+  insecure = true
+}
+
+resource "openshift_deployment_config" "java_app" {
+  metadata {
+    name = "java-app"
+  }
+
+  spec {
+    template {
+      spec {
+        containers {
+          name = "java-app-container"
+          image = "your_registry/your_java_app:latest"
+          ports {
+            container_port = 8080
+          }
+          env {
+            name = "DATABASE_URL"
+            value = "jdbc:postgresql://database.example.com:5432/my_database"
+          }
+          volume_mount {
+            name = "config-volume"
+            mount_path = "/app/config"
+          }
+        }
+        volumes {
+          name = "config-volume"
+          config_map {
+            name = "java-app-config"
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "openshift_config_map" "java_app_config" {
+  metadata {
+    name = "java-app-config"
+  }
+
+  data = {
+    "application.properties" = <<EOF
+      server.port=8080
+      spring.datasource.url=jdbc:postgresql://database.example.com:5432/my_database
+      spring.datasource.username=my_username
+      spring.datasource.password=my_password
+    EOF
+  }
+}
