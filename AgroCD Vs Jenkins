@@ -1,0 +1,16 @@
+
+Table:
+Feature	ArgoCD	Jenkins
+Deployment automation	Declarative, GitOps-style	Flexible, customizable workflows
+Monitoring/synchronization	Continuous monitoring and synchronization	N/A
+Native Kubernetes support	Yes	Requires plugins/integrations
+Integration with other tools	Helm, Kustomize	Large ecosystem of plugins/integrations
+Versatility	Specialized for Kubernetes deployment	General-purpose automation server for various tasks
+Ease of Use	Easy to get started with GitOps	Steep learning curve
+Community Support	Large and active	Large and active
+
+Points to filter:
+-----------------
+1.Terraform has no awareness of your code. It updates a cloud resource. That’s all it knows. It has no awareness of of post-deployment elevated error rates or increased request latency. It has no idea if this new deployment of code subtly caused your application to fail. It doesn’t care. It only understands that it can succeed or fail at creating or updating a resource.
+2.In the event a deployment fails do you need to perform rollback steps, cleanup, or something to that effect? That’s not something Terraform can handle natively.
+3. ever have to jump in for some reason to fix a Terraform problem, like reverting to an old state file, manually releasing a state lock, manually importing resources, or something like that? Can you imagine having to deal with that on top of fixing your failed application deployment?
