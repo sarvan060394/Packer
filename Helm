@@ -1,0 +1,15 @@
+	Helm Charts	Ansible Playbooks
+Templating	  Enables dynamic manifests with placeholders that can be customized at deployment time   	      Can use Jinja2 templates for some dynamic content
+Versioning	  Has built-in versioning for charts, making it easy to track changes and roll back if necessary	Can use source control or other versioning tools, but not                 built-in
+Community     support	Has a large and active community that creates and maintains charts for many popular applications and services	Has a large and active community that shares playbooks and roles, but not as specific to OpenShift
+Kubernetes-native	Designed specifically for Kubernetes and OpenShift, using the same YAML syntax as Kubernetes manifests	Can manage OpenShift and Kubernetes, but not as tightly integrated
+Package management	Packages and distributes charts as software packages, making it easy to share and reuse across teams or organizations	Can be shared, but typically less modular and reusable than Helm Charts
+Complexity	Can manage complex deployments with multiple components, dependencies, and configurations	Can manage simple to moderately complex deployments
+Deployment speed	Can deploy faster since charts are pre-configured and tested, with only values needing to be customized	Can be slower since playbooks may require more customization and testing
+Automation	Provides a higher degree of automation, with more pre-configured and tested deployments	Provides automation, but may require more customization and testing
+
+
+
+
+
+Customize for different environments: You can create multiple values files for different environments, such as development, staging, and production. This allows you to reuse the same template with different values for each environment.
