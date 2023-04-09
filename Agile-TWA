@@ -1,0 +1,93 @@
+DoR
+-----
+Clear Acceptance Criteria: User stories should have specific and measurable acceptance criteria.
+
+Dependencies: All dependencies for the user story should be identified and addressed.
+
+Clarity: User stories should be clear and concise.
+
+Complexity: User stories should be estimated for complexity and should be within the team's capacity.
+
+Risks: Risks associated with the user story should be identified and mitigated.
+
+Readiness: All necessary information, resources, and dependencies should be available before the user story is pulled into the sprint.
+
+Ready for Refinement: Assign the JIRA to proper sprint bucket
+
+
+DOD:
+-----
+Clear Criteria: The DoD should have clear and concise criteria for completion.
+
+Shared Understanding: The DoD should be a shared understanding between the product owner and development team.
+
+Measurable: Each user story must be linked to corresponding feature/epic link.
+
+Review: The DoD should be reviewed by Tech Lead and approved to merge the changes to appropriate environment. Also it should pass Snarquality Gate.
+
+PO: Sign off on user story.
+
+
+Daily standup:
+----------------
+Daily Check-In: Every one should attend the daily standup.
+
+Meeting Time: The Daily Standup should not be more than 30 minutes.
+
+Three Questions: Each team member should answer three questions: What did I do yesterday? What will I do today? Are there any impediments in my way?
+
+Focus on Collaboration: The Daily Standup should focus on collaboration and communication between team members.
+
+Sync-up call: Morning sync-up call is recommended to address any blockers.
+
+Sprint Planning:
+-------------------
+Meeting Time: Sprint Planning should typically be no longer than 2 hours for a 2-week sprint.
+
+Collaborative: Sprint Planning should be a collaborative effort between the product owner and development team.
+
+Define Sprint Goal: The Sprint Goal should be defined and agreed upon by the product owner and development team.
+
+Identify and Select User Stories: The product owner and development team should identify and select user stories for the upcoming sprint that will contribute to achieving the Sprint Goal.
+
+Plan for Capacity: The development team should plan for capacity and determine how many user stories they can realistically complete during the sprint.
+
+Story Grooming:
+--------------------
+
+PO's: The Product Owner's responsibility is to set/communicate goals, and prioritize list of stories to meet those goals for the following 2 iterations.
+
+Refine Acceptance Criteria: Acceptance criteria should be refined and updated for user stories.
+
+Estimate Effort: Effort should be estimated for user stories to help the development team plan their capacity for upcoming sprints.
+
+
+Sprint Demo & Retro:
+----------------------
+
+Demo : Each developer demos their stories that have been deployed to staging for the iteration.
+
+Retro: As a team, we'll discuss the pros and deltas of our experiences during the iteration. Pros are the experiences that made our job easy and effective. Deltas are the experiences that made our job difficult. We'll reflect on the pros to see if there's an opportunity to further grow in that direction, and we'll reflect on the deltas to see what we can do to improve any pain points or inefficiencies.
+
+
+Board Discipiline:
+-------------------
+Prioritize Work: Prioritize your work on the board based on the sprint goals and business value of the user stories.
+
+Update Regularly: Keep your user stories on the board updated regularly to reflect the current status of your work.
+
+Limit Work in Progress: Limit the number of user stories you are working on simultaneously to avoid multitasking and maintain focus.
+
+Sub task: Create sub task under your stories if someone have to work part of your user stories (eg: Review task).
+
+Use Log Work: Amount of time spent on a particular task or issue.
+
+
+
+
+
+
+
+
+
+
