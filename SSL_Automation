@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Check if the certificate file exists
+if [ ! -f "$1" ]; then
+    echo "Certificate file not found."
+    exit 1
+fi
+
+# Define variables
+CERT_FILE="$1"
+JKS_FILE="keystore.jks"
+JKS_PASSWORD="your_keystore_password"
+SECRET_NAME="my-secret"  # Change this to your desired secret name
+
+# Import the certificate into the keystore
+keytool -importcert -file "$CERT_FILE" -keystore "$JKS_FILE" -storepass "$JKS_PASSWORD" -noprompt
+
+# Check if the import was successful
+if [ $? -ne 0 ]; then
+    echo "Certificate import failed."
+    exit 1
+fi
+
+# Create the OpenShift secret
+oc create secret generic "$SECRET_NAME" --from-file="$JKS_FILE" --type="opaque"
+
+# Check if the secret creation was successful
+if [ $? -eq 0 ]; then
+    echo "OpenShift secret '$SECRET_NAME' created successfully."
+else
+    echo "OpenShift secret creation failed."
+    exit 1
+fi
