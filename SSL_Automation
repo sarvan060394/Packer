@@ -31,3 +31,37 @@ else
     echo "OpenShift secret creation failed."
     exit 1
 fi
+
+
+---------------------------------------------------------------------------------------------
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: import-certificate-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: import-certificate-container
+          image: your-registry/your-image:tag
+          command: ["./your-import-script.sh"]
+          # If you need to mount certificates or provide environment variables, include them here.
+      restartPolicy: Never
+--------------------------------------------------------------------------------------------------
+
+# Use a base image
+FROM alpine:latest
+
+# Install required packages
+RUN apk --no-cache add openssl openjdk11 curl jq
+
+# Copy custom scripts
+COPY custom-scripts /usr/local/bin/
+
+# Set environment variables
+ENV MY_VARIABLE=my_value
+
+# Specify the default command to run when the container starts
+CMD ["/bin/sh"]
+
