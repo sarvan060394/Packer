@@ -1,0 +1,72 @@
+import subprocess
+import OpenSSL.crypto
+import os
+from openshift import client, config
+
+# Load OpenShift configuration from the default kubeconfig file
+config.load_kube_config()
+
+# Specify the OpenShift project (namespace) where you want to create the secret
+project_name = 'your_project_name'
+
+# Specify the secret name
+secret_name = 'my-jks-secret'
+
+# Prompt the user for the PFX file path and password
+pfx_file = input("Enter the path to the PFX file: ")
+pfx_password = input("Enter the password for the PFX file (if it's password-protected, otherwise leave blank): ")
+
+# Validate if the file exists
+if not os.path.isfile(pfx_file):
+    print(f"The file '{pfx_file}' does not exist.")
+    exit(1)
+
+# Define the output file paths for PEM, PKCS12, and JKS files
+server_cert_file = 'server.pem'
+private_key_file = 'privatekey.pem'
+ca_cert_file = 'ca.pem'
+pkcs12_file = 'keystore.p12'
+jks_file = 'keystore.jks'
+
+# Read the PFX file
+with open(pfx_file, 'rb') as pfx_data:
+    pfx = OpenSSL.crypto.load_pkcs12(pfx_data.read(), pfx_password)
+
+# Extract the server certificate and private key
+server_cert = OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, pfx.get_certificate())
+private_key = OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM, pfx.get_privatekey())
+
+# Write the server certificate and private key to separate PEM files
+with open(server_cert_file, 'wb') as server_cert_output:
+    server_cert_output.write(server_cert)
+
+with open(private_key_file, 'wb') as private_key_output:
+    private_key_output.write(private_key)
+
+# Extract and write the CA certificates if available
+ca_certs = pfx.get_ca_certificates()
+if ca_certs:
+    with open(ca_cert_file, 'wb') as ca_cert_output:
+        for ca_cert in ca_certs:
+            ca_cert_data = OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, ca_cert)
+            ca_cert_output.write(ca_cert_data)
+
+print(f'Conversion of PFX to PEM complete. Server certificate: {server_cert_file}, Private key: {private_key_file}, CA certificate: {ca_cert_file}')
+
+# Convert PEM files to PKCS12
+openssl_command = f'openssl pkcs12 -export -out {pkcs12_file} -inkey {private_key_file} -in {server_cert_file} -certfile {ca_cert_file}'
+subprocess.run(openssl_command, shell=True, check=True)
+
+# Import PKCS12 into JKS
+keytool_command = f'keytool -importkeystore -srckeystore {pkcs12_file} -srcstoretype PKCS12 -destkeystore {jks_file} -deststoretype JKS'
+subprocess.run(keytool_command, shell=True, check=True)
+
+print(f'Conversion to JKS keystore complete. JKS keystore: {jks_file}')
+
+# Create an OpenShift secret for the JKS file
+oc_command = f'oc create secret generic {secret_name} --from-file={jks_file} -n {project_name}'
+try:
+    subprocess.run(oc_command, shell=True, check=True)
+    print(f"Secret {secret_name} created successfully in project {project_name}.")
+except Exception as e:
+    print(f"Error creating secret: {e}")
