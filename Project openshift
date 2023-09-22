@@ -8,6 +8,19 @@ password="$OPENSHIFT_PASSWORD"
 # Log in to the OpenShift cluster
 oc login "$cluster_url" --username="$username" --password="$password"
 
+#!/bin/bash
+
+# Prompt the user for OpenShift cluster URL
+read -p "Enter OpenShift Cluster URL (e.g., https://your-cluster-url:port): " cluster_url
+
+# Prompt the user for OpenShift username
+read -p "Enter OpenShift Username: " username
+
+# Prompt the user for OpenShift password (masked)
+read -s -p "Enter OpenShift Password: " password
+echo # Add a new line for a cleaner output
+
+# Now, you can use the cluster_url, username, and password variables in your script as needed.
 
 
 from flask import Flask, request, jsonify
