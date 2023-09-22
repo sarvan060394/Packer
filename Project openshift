@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Read sensitive data from environment variables
+cluster_url="$OPENSHIFT_CLUSTER_URL"
+username="$OPENSHIFT_USERNAME"
+password="$OPENSHIFT_PASSWORD"
+
+# Log in to the OpenShift cluster
+oc login "$cluster_url" --username="$username" --password="$password"
+
+
+
+from flask import Flask, request, jsonify
+import subprocess
+
+app = Flask(__name__)
+
+@app.route('/login', methods=['POST'])
+def login_to_openshift():
+    # Get the JSON data from the request
+    data = request.get_json()
+
+    # Extract cluster URL, username, and password from the JSON data
+    cluster_url = data.get('cluster_url')
+    username = data.get('username')
+    password = data.get('password')
+
+    # Create the command to run the Bash script
+    command = ['./login_to_openshift.sh', cluster_url, username, password]
+
+    try:
+        # Run the Bash script
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output = result.stdout.decode('utf-8')
+        error = result.stderr.decode('utf-8')
+
+        if result.returncode == 0:
+            return jsonify({'status': 'success', 'output': output})
+        else:
+            return jsonify({'status': 'error', 'message': error})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+if __name__ == '__main__':
+    app.run(debug=True)
