@@ -105,3 +105,50 @@ else
 fi
 
 
+#!/bin/bash
+
+# Set OpenShift cluster URL and project name
+cluster_url="https://your-cluster-url:port"
+project_name="your-project-name"
+
+# Set OpenShift username and password
+username="your-username"
+password="your-password"
+
+# Authenticate and get an access token
+token_response=$(curl -s -X POST \
+  "$cluster_url/oauth/token/request" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password&username=$username&password=$password")
+
+# Extract the access token from the response
+access_token=$(echo "$token_response" | jq -r '.access_token')
+
+if [ -n "$access_token" ]; then
+  echo "Authentication successful. Access token obtained: $access_token"
+else
+  echo "Authentication failed. Please check your credentials."
+  exit 1
+fi
+
+# Create a secret with key-value pairs using the access token
+secret_name="my-secret"
+secret_data='{
+  "data": {
+    "username": "'"$username"'",
+    "password": "'"$password"'",
+    "other_key": "other_value"
+  }
+}'
+
+create_secret_response=$(curl -s -X POST \
+  "$cluster_url/apis/v1/namespaces/$project_name/secrets" \
+  -H "Authorization: Bearer $access_token" \
+  -H "Content-Type: application/json" \
+  -d "$secret_data")
+
+if [ $? -eq 0 ]; then
+  echo "Secret creation successful."
+else
+  echo "Secret creation failed."
+fi
