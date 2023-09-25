@@ -56,3 +56,52 @@ def login_to_openshift():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+#!/bin/bash
+
+# Set OpenShift cluster URL and project name
+cluster_url="https://your-cluster-url:port"
+project_name="your-project-name"
+
+# Set OpenShift username and password for the Docker registry
+docker_registry_username="your-docker-username"
+docker_registry_password="your-docker-password"
+docker_registry_server="your-docker-registry-server"
+
+# Authenticate and get an access token
+token_response=$(curl -s -X POST \
+  "$cluster_url/oauth/token/request" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password&username=$docker_registry_username&password=$docker_registry_password")
+
+# Extract the access token from the response
+access_token=$(echo "$token_response" | jq -r '.access_token')
+
+if [ -n "$access_token" ]; then
+  echo "Authentication successful. Access token obtained: $access_token"
+else
+  echo "Authentication failed. Please check your Docker registry credentials."
+  exit 1
+fi
+
+# Create a Docker registry secret using the access token
+secret_name="my-docker-secret"
+secret_data='{
+  ".dockerconfigjson": "'$(echo -n "{\"auths\":{\"$docker_registry_server\":{\"username\":\"$docker_registry_username\",\"password\":\"$docker_registry_password\",\"auth\":\"\"}}}" | base64 -w0)'"'
+}'
+
+create_secret_response=$(curl -s -X POST \
+  "$cluster_url/apis/v1/namespaces/$project_name/secrets" \
+  -H "Authorization: Bearer $access_token" \
+  -H "Content-Type: application/json" \
+  -d "{\"metadata\":{\"name\":\"$secret_name\"},\"type\":\"kubernetes.io/dockerconfigjson\",\"data\":$secret_data}")
+
+if [ $? -eq 0 ]; then
+  echo "Docker registry secret creation successful."
+else
+  echo "Docker registry secret creation failed."
+fi
+
+
