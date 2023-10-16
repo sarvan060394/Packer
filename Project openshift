@@ -152,3 +152,80 @@ if [ $? -eq 0 ]; then
 else
   echo "Secret creation failed."
 fi
+
+
+****************************************************************************************************************************************
+Powershell
+****************************************************************************************************************************************
+
+JSON BASE64:
+---------------
+@echo off
+setlocal
+
+:: Define the username and password
+set "username=myUsername"
+set "password=myPassword"
+
+:: Combine the username and password with a colon separator
+set "credentials=%username%:%password%"
+
+:: Use PowerShell to encode the credentials to Base64
+for /f "delims=" %%b in ('powershell "[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes('%credentials%'))"') do set "encodedCredentials=%%b"
+
+:: Print the Base64-encoded credentials
+echo Base64-encoded credentials: %encodedCredentials%
+
+:: End the batch file
+endlocal
+
+
+
+
+@echo off
+setlocal
+
+:: Define the JSON content
+set "jsonContent={\"key\":\"value\",\"another_key\":\"another_value\"}"
+
+:: Use PowerShell to encode the JSON content to Base64
+for /f "delims=" %%b in ('powershell "[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes('%jsonContent%'))"') do set "auth=%%b"
+
+:: Print the Base64-encoded JSON
+echo Base64-encoded JSON: %auth%
+
+
+:: End the batch file
+endlocal
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Openshift Login:
+-----------------------------
+@REM ------------------------------------------------
+
+@echo off
+setlocal enabledelayedexpansion
+
+REM Get the username from the user
+set /p OPENSHIFT_USERNAME=Enter your OpenShift username: 
+
+REM Get the password from the user
+set /p OPENSHIFT_PASSWORD=Enter your OpenShift password: 
+
+REM Set your OpenShift cluster URL
+set OPENSHIFT_SERVER=https://your-openshift-cluster-url
+
+REM Build the curl command with the username and password
+set CURL_COMMAND=curl -k -X POST %OPENSHIFT_SERVER%/oauth/token/request -d "grant_type=password^&username=!OPENSHIFT_USERNAME!^&password=!OPENSHIFT_PASSWORD!" -H "Content-Type: application/x-www-form-urlencoded"
+
+REM Print the curl command
+echo Curl command:
+echo %CURL_COMMAND%
+
+REM Execute the curl command
+%CURL_COMMAND%
+
+endlocal
+exit /b 0
+
