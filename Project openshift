@@ -155,7 +155,7 @@ fi
 
 
 ****************************************************************************************************************************************
-Powershell
+BAT
 ****************************************************************************************************************************************
 
 JSON BASE64:
@@ -228,4 +228,42 @@ REM Execute the curl command
 
 endlocal
 exit /b 0
+
+-----------------------------------------------------------------------------------------------------------------
+Powershell
+-----------------------------------------------------------------------------------------------------------------
+
+# Define the JSON content
+$jsonContent = '{"key":"value","another_key":"another_value"}'
+
+# Convert the JSON content to bytes and then encode to Base64
+$base64EncodedJSON = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($jsonContent))
+
+# Print the Base64-encoded JSON
+Write-Host "Base64-encoded JSON: $base64EncodedJSON"
+
+--------------------------------
+
+# Get the OpenShift username from the user
+$OPENSHIFT_USERNAME = Read-Host "Enter your OpenShift username"
+
+# Get the OpenShift password from the user (masked)
+$OPENSHIFT_PASSWORD = Read-Host "Enter your OpenShift password" -AsSecureString
+
+# Convert the secure string to plain text
+$SecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($OPENSHIFT_PASSWORD))
+
+# Set your OpenShift cluster URL
+$OPENSHIFT_SERVER = "https://your-openshift-cluster-url"
+
+# Build the curl command with the username and password
+$CURL_COMMAND = "curl -k -X POST $OPENSHIFT_SERVER/oauth/token/request -d ""grant_type=password&username=$OPENSHIFT_USERNAME&password=$SecurePassword"" -H ""Content-Type: application/x-www-form-urlencoded"""
+
+# Print the curl command
+Write-Host "Curl command:"
+Write-Host $CURL_COMMAND
+
+# Execute the curl command
+Invoke-Expression $CURL_COMMAND
+
 
