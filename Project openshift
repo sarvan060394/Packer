@@ -264,6 +264,95 @@ Write-Host "Curl command:"
 Write-Host $CURL_COMMAND
 
 # Execute the curl command
+
+
 Invoke-Expression $CURL_COMMAND
 
+------------/-
+function OpenShift-Login {
+    $username = "achp****deb"  # Replace asterisks with your specific username
+
+    if ($username -like "achp****deb*") {
+        try {
+            $password = "your-password"  # Set your password here
+            $ocLogin = & oc login -u $username -p $password --server=https://your-openshift-cluster-url
+
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "Successfully logged in to OpenShift."
+                return $true
+            } else {
+                Write-Host "Failed to log in to OpenShift."
+                return $false
+            }
+        } catch {
+            Write-Host "Error logging in to OpenShift: $_"
+            return $false
+        }
+    } else {
+        Write-Host "Username does not match the expected pattern. Skipping login."
+        return $false
+    }
+}
+
+function Create-Secret {
+    param (
+        [string] $secretName,
+        [string] $username,
+        [string] $password
+    )
+
+    try {
+        $ocCreateSecret = & oc create secret generic $secretName --from-literal=username=$username --from-literal=password=$password
+
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Secret created successfully."
+        } else {
+            throw "Error creating secret."
+        }
+    } catch {
+        throw "Error creating secret: $_"
+    }
+}
+
+function Link-Secret-To-ServiceAccount {
+    param (
+        [string] $secretName,
+        [string] $serviceAccountName
+    )
+
+    try {
+        $ocLinkSecret = & oc secrets link $serviceAccountName $secretName
+
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Secret linked to service account ($serviceAccountName) successfully."
+        } else {
+            throw "Error linking secret to service account ($serviceAccountName)."
+        }
+    } catch {
+        throw "Error linking secret to service account: $_"
+    }
+}
+
+# Usage example:
+try {
+    $loginSuccess = OpenShift-Login
+
+    if ($loginSuccess) {
+        $secretName = "my-secret"
+        $username = "achp****deb"  # Replace asterisks with your specific username
+        $password = "my-password"
+
+        Create-Secret -secretName $secretName -username $username -password $password
+
+        $builderServiceAccount = "builder"
+        $defaultServiceAccount = "default"
+
+        Link-Secret-To-ServiceAccount -secretName $secretName -serviceAccountName $builderServiceAccount
+        Link-Secret-To-ServiceAccount -secretName $secretName -serviceAccountName $defaultServiceAccount
+
+        Write-Host "Secret created and linked successfully."
+    }
+} catch {
+    Write-Host "Error: $_"
+}
 
