@@ -355,4 +355,26 @@ try {
 } catch {
     Write-Host "Error: $_"
 }
+---------
+# Function to check if 'oc' CLI is installed
+function CheckOcInstalled {
+    $ocPath = Get-Command -ErrorAction SilentlyContinue oc
+    return $ocPath -ne $null
+}
+
+# Function to install 'oc' CLI from JFrog repository
+function InstallOcFromJFrog {
+    $ocDownloadUrl = 'https://path/to/your/oc/download/url'
+    Invoke-WebRequest -Uri $ocDownloadUrl -OutFile 'oc.exe'
+    Move-Item -Path 'oc.exe' -Destination "$env:ProgramFiles\oc\oc.exe"
+}
+
+# Main script
+if (-not (CheckOcInstalled)) {
+    Write-Host "'oc' CLI not found. Downloading and installing..."
+    InstallOcFromJFrog
+}
+
+# Set environment variable for 'oc' CLI
+$env:PATH += ";$env:ProgramFiles\oc"
 
