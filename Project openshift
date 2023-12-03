@@ -382,3 +382,34 @@ $env:PATH += ";$env:ProgramFiles\oc"
 
 Invoke-RestMethod -Uri 'jfrogurl' -Headers @{'Authorization' = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("user:password")) ; 'Content-Type' = 'application/json'} -OutFile 'oc.exe'
 
+
+
+function Link-SecretToServiceAccounts {
+    param (
+        [string]$secretName
+    )
+
+    try {
+        # Link the secret to the builder and default service accounts and capture the status
+        $builderStatus = & oc secrets link builder $secretName --for=pull 2>&1
+        $defaultStatus = & oc secrets link default $secretName --for=pull 2>&1
+
+        # Check the status and handle accordingly
+        if ($builderStatus -like "*error*") {
+            throw "Error linking secret to builder service account: $builderStatus"
+        }
+
+        if ($defaultStatus -like "*error*") {
+            throw "Error linking secret to default service account: $defaultStatus"
+        }
+
+        Write-Host "Secret '$secretName' linked to service accounts 'builder' and 'default' successfully."
+    }
+    catch {
+        Write-Host "Error linking secret to service accounts: $_"
+    }
+}
+
+# Example usage:
+Link-SecretToServiceAccounts -secretName "your-secret-name"
+
