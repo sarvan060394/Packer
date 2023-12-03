@@ -413,3 +413,25 @@ function Link-SecretToServiceAccounts {
 # Example usage:
 Link-SecretToServiceAccounts -secretName "your-secret-name"
 
+# JFrog Artifactory URL for the repository and path to the executable file
+$artifactoryUrl = "https://your-artifactory-instance/artifactory/your-repository/your-path/your-file.exe"
+
+# Replace 'your-username' and 'your-password' with your Artifactory credentials
+$username = "your-username"
+$password = "your-password"
+
+# Convert the username and password to base64 for basic authentication
+$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("${username}:${password}")))
+
+# Set up the headers with the Authorization information
+$headers = @{
+    Authorization = "Basic $base64AuthInfo"
+}
+
+# Set the output file path for the downloaded exe file
+$outputFilePath = "C:\Path\To\Your\Destination\your-file.exe"
+
+# Download the file using Invoke-RestMethod
+Invoke-RestMethod -Uri $artifactoryUrl -Headers $headers -OutFile $outputFilePath -Method Get
+
+Write-Host "Download complete: $outputFilePath"
