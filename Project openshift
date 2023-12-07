@@ -435,3 +435,75 @@ $outputFilePath = "C:\Path\To\Your\Destination\your-file.exe"
 Invoke-RestMethod -Uri $artifactoryUrl -Headers $headers -OutFile $outputFilePath -Method Get
 
 Write-Host "Download complete: $outputFilePath"
+
+
+=========================================================================================
+function CheckAndInstallOC {
+    # Check if the oc CLI is installed
+    $ocCli = Get-Command oc -ErrorAction SilentlyContinue
+
+    if ($null -eq $ocCli) {
+        # Download the oc CLI
+        Invoke-WebRequest -Uri "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/windows/oc.zip" -OutFile "C:\Temp\oc.zip"
+
+        # Extract the oc CLI
+        Expand-Archive -Path "C:\Temp\oc.zip" -DestinationPath "C:\Temp" -Force
+
+        # Add the oc CLI to the environment path
+        $env:Path += ";C:\Temp"
+
+        # Verify that the oc CLI is now installed
+        $ocCli = Get-Command oc -ErrorAction SilentlyContinue
+
+        if ($null -eq $ocCli) {
+            Write-Host "Error: OpenShift CLI could not be installed."
+            exit 1
+        }
+    }
+}
+
+function DownloadAndExtractZip($username, $password, $url, $outFile, $destination) {
+    # Rest of the script...
+}
+
+# Set the working directory to C:\Temp
+Set-Location C:\Temp
+
+# Check if the oc CLI is installed and install it if necessary
+CheckAndInstallOC
+
+# Call the function with your actual values
+# Rest of the script...
+
+====================================================================================
+function DownloadAndExtractZip($username, $password, $url, $outFile, $destination) {
+    $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username, $password)))
+
+    $headers = @{
+        Authorization = "Basic $base64AuthInfo"
+    }
+
+    Invoke-WebRequest -Uri $url -OutFile $outFile -Headers $headers
+
+    # Extract the zip file
+    Expand-Archive -Path $outFile -DestinationPath $destination -Force
+
+    # Get the path to the extracted directory
+    $extractedPath = (Get-ChildItem -Path $destination -Directory).FullName
+
+    # Set the environment path
+    $env:Path += ";$extractedPath"
+
+    # Return the path to the extracted directory
+    return $extractedPath
+}
+
+# Call the function with your actual values
+$username = "<USERNAME>"
+$password = "<PASSWORD>"
+$url = "<ARTIFACTORY_URL>/<REPOSITORY_PATH>"
+$outFile = "<PATH_TO_SAVE_ZIP_FILE>\output.zip"
+$destination = "<PATH_TO_EXTRACT_ZIP_FILE>"
+
+$extractedPath = DownloadAndExtractZip $username $password $url $outFile $destination
+Write-Host "Zip file extracted to: $extractedPath"
