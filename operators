@@ -17,3 +17,33 @@ To watch for updates to the "hello sidecar" image in your private JFrog reposito
 Define a Function to Check for Updates: Create a function that fetches the list of artifacts in the JFrog repository and compares them with the current version of the "hello sidecar" image.
 Periodically Invoke the Update Check Function: Use a goroutine to periodically invoke the update check function.
 Trigger Deployment Update: If a new version of the "hello sidecar" image is found, trigger the logic to update the deployment with the new image.
+
+
+Step 1: Define CRD
+Define a CRD for your operator. For example, a CRD that includes annotations to specify which deployments should be updated:
+
+Step 2: Implement Operator Logic
+Implement the operator logic to watch for updates in the JFrog repository and update deployments:
+
+Use a library to interact with the JFrog Artifactory API and fetch the list of artifacts.
+Use the Kubernetes client library to watch for deployments and update them based on annotations or labels.
+Step 3: Watch for Updates
+Watch for updates in the JFrog repository using the JFrog Artifactory API:
+
+Periodically fetch the list of artifacts in the repository.
+Compare the list of artifacts with the current version of the "hello sidecar" image.
+Step 4: Check Annotations or Labels
+Check the annotations or labels of deployments to determine which deployments should be updated:
+
+Use the Kubernetes client library to get deployments.
+Check the annotations or labels of each deployment to see if it matches the criteria for an update.
+Step 5: Update Deployments
+Update deployments with the new image version:
+
+Use the Kubernetes client library to update deployments with the new image version.
+Update the deployment's containers with the new image.
+Step 6: Run the Operator
+Run the operator in your Kubernetes cluster:
+
+Deploy the operator as a Kubernetes deployment.
+Ensure the operator has the necessary RBAC permissions to watch for deployments and update them.
