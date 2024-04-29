@@ -1,0 +1,19 @@
+To achieve this, you can create a custom OpenShift operator using the Operator SDK. This operator will watch for changes in the JFrog repository and update the deployment whenever a new image is available. Here's a basic outline of how you can implement this:
+
+Define Custom Resource Definition (CRD): Define a CRD that represents the deployment configuration and the sidecar image to watch for.
+Implement Operator Logic: Write the logic for the operator to watch for changes in the JFrog repository and update the deployment when a new image is available.
+Use Kubernetes Client Library: Use the Kubernetes client library to interact with the Kubernetes API and update the deployment.
+Watch JFrog Repository: Use a library or tool to watch the JFrog repository for changes and trigger the operator logic when a new image is available.
+Rollout New Image: Update the deployment's container image to the latest version when a new image is available.
+
+Get the List of Artifacts in the Repository: Periodically fetch the list of artifacts in your JFrog repository using the Artifactory REST API. You can use the /api/storage/{repoKey}/{itemPath} endpoint to get information about the artifacts in the repository.
+Check for Updates: Compare the list of artifacts with the previous list to identify any new artifacts or changes to existing artifacts.
+Trigger Deployment Update: When you detect a new artifact or a change in an existing artifact that matches the "hello sidecar" image, trigger the logic to update the deployment with the new image.
+
+
+
+To watch for updates to the "hello sidecar" image in your private JFrog repository, you can modify the operator to periodically check the repository for new versions of the image. Here's a basic outline of how you can implement this:
+
+Define a Function to Check for Updates: Create a function that fetches the list of artifacts in the JFrog repository and compares them with the current version of the "hello sidecar" image.
+Periodically Invoke the Update Check Function: Use a goroutine to periodically invoke the update check function.
+Trigger Deployment Update: If a new version of the "hello sidecar" image is found, trigger the logic to update the deployment with the new image.
