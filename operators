@@ -18,6 +18,22 @@ Define a Function to Check for Updates: Create a function that fetches the list 
 Periodically Invoke the Update Check Function: Use a goroutine to periodically invoke the update check function.
 Trigger Deployment Update: If a new version of the "hello sidecar" image is found, trigger the logic to update the deployment with the new image.
 
+----------------------------------
+To create an operator that watches for new updates in a JFrog repository and updates a sidecar container in a deployment based on annotations or labels, you can follow these steps:
+
+Define Custom Resource Definition (CRD):
+Create a CRD that represents the deployment configuration and includes annotations or labels to specify which deployments should be updated.
+Implement Operator Logic:
+Use the Operator SDK or a similar framework to create the operator.
+Watch for changes in the JFrog repository using the JFrog Artifactory API.
+When a new version of the "hello sidecar" image is available, check the annotations or labels of deployments to determine which deployments should be updated.
+Fetch List of Artifacts:
+Use the JFrog Artifactory API to fetch the list of artifacts in the repository.
+Check for New Image Version:
+Compare the list of artifacts with the current version of the "hello sidecar" image to check for updates.
+Update Deployment:
+If a new version of the image is available and the deployment's annotations or labels indicate that it should be updated, update the deployment with the new image.
+Here's a detailed step-by-step process:
 
 Step 1: Define CRD
 Define a CRD for your operator. For example, a CRD that includes annotations to specify which deployments should be updated:
