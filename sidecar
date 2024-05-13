@@ -38,12 +38,14 @@ It provides a clear indication to your sidecar component about the Redis cluster
 
 Sure, here's a tabular representation of user inputs for both a standalone Redis database and a Redis cluster:
 
-Input	Standalone Redis Database	Redis Cluster
-Redis Host	Example: redis.example.com	Example: redis-cluster.example.com
-Redis Port	Example: 6379	Example: 7000
-Authentication Credentials (Optional)	Username: user1, Password: password123	Username: user1, Password: password123
-Connection Pooling Configuration	Min Connections: 5, Max Connections: 20, Idle Timeout: 30000 ms	Min Connections: 10, Max Connections: 50, Idle Timeout: 60000 ms
-Timeout Configuration	Connection Timeout: 5000 ms, Command Timeout: 10000 ms	Connection Timeout: 8000 ms, Command Timeout: 15000 ms
-SSL/TLS Configuration (Optional)	SSL Certificate Path: /path/to/certificate.pem	SSL Certificate Path: /path/to/certificate.pem
-Retry Strategy	Max Retry Attempts: 3, Retry Interval: 2000 ms	Max Retry Attempts: 5, Retry Interval: 3000 ms
-Monitoring and Logging Configuration	Log Level: INFO, Metrics Collection: Enabled	Log Level: DEBUG, Metrics Collection: Disabled
+| Input                     | Standalone Redis Database                                | Redis Cluster                                          |
+|---------------------------|-----------------------------------------------------------|--------------------------------------------------------|
+| Redis Host                | Example: `redis.example.com`                             | Example: `redis-cluster.example.com`                   |
+| Redis Port                | Example: `6379`                                           | Example: `7000`                                        |
+| Authentication Credentials (Optional) | Username: `user1`, Password: `password123`          | Username: `user1`, Password: `password123`            |
+| Connection Pooling Configuration | Min Connections: `5`, Max Connections: `20`, Idle Timeout: `30000 ms` | Min Connections: `10`, Max Connections: `50`, Idle Timeout: `60000 ms` |
+| Timeout Configuration     | Connection Timeout: `5000 ms`, Command Timeout: `10000 ms` | Connection Timeout: `8000 ms`, Command Timeout: `15000 ms` |
+| SSL/TLS Configuration (Optional) | SSL Certificate Path: `/path/to/certificate.pem`     | SSL Certificate Path: `/path/to/certificate.pem`      |
+| Retry Strategy            | Max Retry Attempts: `3`, Retry Interval: `2000 ms`         | Max Retry Attempts: `5`, Retry Interval: `3000 ms`    |
+| Monitoring and Logging Configuration | Log Level: `INFO`, Metrics Collection: `Enabled`   | Log Level: `DEBUG`, Metrics Collection: `Disabled`    |
+
