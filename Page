@@ -1,0 +1,56 @@
+Sidecar Failover Scenarios and Mitigations
+App to Sidecar Integration
+App to Sidecar Connectivity
+Scenario: Determining Sidecar Status
+The consumer app needs to ascertain the status of the sidecar to ensure seamless communication.
+
+Mitigation:
+The consumer app won't necessitate an explicit health check for the sidecar. Instead, it will determine the sidecar's status through HTTP requests.
+
+Sidecar Crash
+Scenario: Sidecar Container Crash
+If the sidecar container crashes, the main app loses communication with the sidecar.
+
+Mitigation:
+Implement liveness and readiness probes in the sidecar container:
+
+Liveness probe: Automatically restarts the sidecar container if it crashes.
+Readiness probe: Ensures that the sidecar container is ready to start accepting traffic.
+Sidecar Resource Exhaustion
+Scenario: Exhaustion of Sidecar Resources
+If the sidecar container exhausts its resources (CPU, memory), it may become unresponsive.
+
+Mitigation:
+Conduct a detailed analysis of performance and load testing to determine the required resource allocation for the sidecar.
+Implement a guaranteed pod in OpenShift to ensure that the sidecar has the necessary allocated resources.
+Delay in Sidecar's Response
+Scenario: Delayed Response from Sidecar
+If the sidecar takes too long to process requests, the consumer app needs to know the sidecar's status.
+
+Mitigation:
+Set appropriate timeout values.
+Implement retry logic in the main app to handle temporary failures effectively.
+Sidecar to Services Integration
+No Response from Redis Cluster
+Scenario: Absence of Response from Service
+The sidecar needs to handle situations where there is no response from the Redis cluster.
+
+Mitigation:
+Utilize an exponential backoff algorithm to increase the time between retry attempts.
+Sidecar should adhere to timeout rules when connecting to the Redis cluster.
+Redis Cluster is Back Online
+Scenario: Redis Cluster Restoration
+Upon the Redis cluster coming back online, the sidecar should be restarted to attempt reconnection.
+
+Mitigation:
+After several retries, the sidecar ceases attempts to connect to the Redis cluster. Two approaches for restarting the sidecar are:
+
+Resource Monitoring Application:
+
+Develop a resource monitoring application deployed via deployment in OpenShift within the same namespace.
+Monitor the Redis cluster's status and restart the sidecar accordingly.
+Operator Implementation:
+
+Create an operator to periodically check the Redis cluster's status.
+Restart the sidecar to reconnect to the Redis cluster upon restoration.
+These mitigation strategies ensure robust failover mechanisms and seamless integration between the app and sidecar, as well as between the sidecar and services.
