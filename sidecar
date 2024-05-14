@@ -49,3 +49,18 @@ Sure, here's a tabular representation of user inputs for both a standalone Redis
 | Retry Strategy            | Max Retry Attempts: `3`, Retry Interval: `2000 ms`         | Max Retry Attempts: `5`, Retry Interval: `3000 ms`    |
 | Monitoring and Logging Configuration | Log Level: `INFO`, Metrics Collection: `Enabled`   | Log Level: `DEBUG`, Metrics Collection: `Disabled`    |
 
+=======================================================================================
+| User Input            | Description                                                                                                                                      | Example (Standalone Redis) | Example (Redis Cluster)              |
+|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|--------------------------------------|
+| Redis Host            | The hostname or IP address of the Redis server to connect to.                                                                                   | `localhost`                 | `redis-cluster.example.com`         |
+| Redis Port            | The port on which the Redis server is listening for connections.                                                                                 | `6379`                      | `7000` (for cluster mode)           |
+| Username/Password     | Authentication with a username and password.                                                                                                     | `Username:Password`         | `Username:Password`                  |
+| OpenShift Secret      | Authentication using OpenShift secret, where the user provides the secret name and key.                                                          | `SecretName:SecretKey`      | `SecretName:SecretKey`               |
+| Vault                 | Authentication with Vault, where the user provides Vault URI, role, and key.                                                                    | `VaultURI, VaultRole, VaultKey` | `VaultURI, VaultRole, VaultKey`      |
+| SSL/TLS Configuration | If the Redis server requires SSL/TLS encryption, users may need to provide SSL certificate and key files, along with related configuration.   | `cert.pem`, `key.pem`       | `cert.pem`, `key.pem`, `ca.pem`     |
+| Connection Pooling    | Configuration parameters for connection pooling, such as maximum connections, idle timeout, etc., to optimize resource usage.                  | `max_connections: 100`      | `max_connections: 50`               |
+| Retry Strategy        | Configuration for retrying failed connection attempts, including parameters like retry interval, maximum retries, etc.                          | `retry_interval: 5s`        | `retry_interval: 10s, max_retries: 3`|
+| Monitoring            | Options for monitoring and logging, including log level, log destination, metrics collection, etc.                                             | `log_level: INFO`           | `log_level: DEBUG, metrics: true`   |
+| Other Configuration   | Additional configuration parameters specific to the Redis deployment, such as buffer size, connection timeout, etc.                             | `buffer_size: 4096`         | `timeout: 10s, buffer_size: 8192`   |
+
+
