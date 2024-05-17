@@ -54,3 +54,27 @@ Operator Implementation:
 Create an operator to periodically check the Redis cluster's status.
 Restart the sidecar to reconnect to the Redis cluster upon restoration.
 These mitigation strategies ensure robust failover mechanisms and seamless integration between the app and sidecar, as well as between the sidecar and services.
+------------------
+
+import os
+import redis
+import time
+
+def check_redis_cluster(redis_host, redis_port):
+    try:
+        r = redis.StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
+        # Check connection
+        r.ping()
+        print("Redis cluster is up and running")
+    except redis.ConnectionError:
+        print("Redis cluster is down")
+
+if __name__ == "__main__":
+    # Get Redis host and port from environment variables
+    redis_host = os.getenv('REDIS_HOST', 'localhost')
+    redis_port = int(os.getenv('REDIS_PORT', 6379))
+
+    while True:
+        check_redis_cluster(redis_host, redis_port)
+        time.sleep(60)  # Check every 60 seconds
+
